@@ -15,6 +15,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.telephony.SmsManager;
+import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -32,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
 
     private static final int READ_SMS_PERMISSIONS_REQUEST = 1;
     private static final int SEND_SMS_PERMISSIONS_REQUEST = 1;
+    private static final int RECEIVE_SMS_PERMISSIONS_REQUEST = 1;
 
     private static MainActivity inst;
 
@@ -60,6 +62,12 @@ public class MainActivity extends AppCompatActivity {
         ListView messages = (ListView) findViewById(R.id.messages);
         arrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, smsMessagesList);
         messages.setAdapter(arrayAdapter);
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECEIVE_SMS)
+                != PackageManager.PERMISSION_GRANTED) {
+            getPermissionToReceiveSMS();
+        }
+
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_SMS)
                 != PackageManager.PERMISSION_GRANTED) {
             getPermissionToReadSMS();
@@ -230,7 +238,7 @@ public class MainActivity extends AppCompatActivity {
     public void getPermissionToReadSMS() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_SMS)
                 != PackageManager.PERMISSION_GRANTED) {
-            Toast.makeText(this, "getting permission...", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "getting permission to read sm...", Toast.LENGTH_SHORT).show();
 
             if (shouldShowRequestPermissionRationale(
                     Manifest.permission.READ_SMS)) {
@@ -247,11 +255,25 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this, "getting permission to send sms...", Toast.LENGTH_SHORT).show();
 
             if (shouldShowRequestPermissionRationale(
-                    Manifest.permission.READ_SMS)) {
+                    Manifest.permission.SEND_SMS)) {
                 Toast.makeText(this, "Please allow permission!", Toast.LENGTH_SHORT).show();
             }
             requestPermissions(new String[]{Manifest.permission.SEND_SMS},
                     SEND_SMS_PERMISSIONS_REQUEST);
+        }
+    }
+
+    public void getPermissionToReceiveSMS() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECEIVE_SMS)
+                != PackageManager.PERMISSION_GRANTED) {
+            Toast.makeText(this, "getting permission to receive sms...", Toast.LENGTH_SHORT).show();
+
+            if (shouldShowRequestPermissionRationale(
+                    Manifest.permission.RECEIVE_SMS)) {
+                Toast.makeText(this, "Please allow permission!", Toast.LENGTH_SHORT).show();
+            }
+            requestPermissions(new String[]{Manifest.permission.RECEIVE_SMS},
+                    RECEIVE_SMS_PERMISSIONS_REQUEST);
         }
     }
 
