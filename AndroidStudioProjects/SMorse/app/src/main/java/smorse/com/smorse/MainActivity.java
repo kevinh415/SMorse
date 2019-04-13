@@ -24,7 +24,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-
+import java.util.HashMap;
 import java.util.ArrayList;
 
 
@@ -38,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<String> smsMessagesList = new ArrayList<>();
     ArrayAdapter arrayAdapter;
     SmsManager smsManager = SmsManager.getDefault();
+    HashMap<String, String> alphabet = new HashMap<>();
 
     public static MainActivity instance() {
         return inst;
@@ -113,6 +114,60 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+
+        alphabet.put("A", ".-");
+        alphabet.put("B", "-...");
+        alphabet.put("C", "-.-.");
+        alphabet.put("D", "-..");
+        alphabet.put("E", ".");
+        alphabet.put("F", "..-.");
+        alphabet.put("G", "--.");
+        alphabet.put("H", "....");
+        alphabet.put("I", "..");
+        alphabet.put("J", ".---");
+        alphabet.put("K", "-.-");
+        alphabet.put("L", ".-..");
+        alphabet.put("M", "--");
+        alphabet.put("N", "-.");
+        alphabet.put("O", "---");
+        alphabet.put("P", ".---.");
+        alphabet.put("Q", "--.-");
+        alphabet.put("R", ".-.");
+        alphabet.put("S", "...");
+        alphabet.put("T", "-");
+        alphabet.put("U", "..-");
+        alphabet.put("V", "...-");
+        alphabet.put("W", ".--");
+        alphabet.put("X", "-..-");
+        alphabet.put("Y", "-.--");
+        alphabet.put("Z", "--..");
+        alphabet.put("1", ".----");
+        alphabet.put("2", "..---");
+        alphabet.put("3", "...--");
+        alphabet.put("4", "....-");
+        alphabet.put("5", ".....");
+        alphabet.put("6", "-....");
+        alphabet.put("7", "--...");
+        alphabet.put("8", "---..");
+        alphabet.put("9", "----.");
+        alphabet.put(".", ".-.-.-");
+        alphabet.put(",", "--..--");
+        alphabet.put("?", "..--..");
+        alphabet.put("'", "-----");
+        alphabet.put("!", "-.-.--");
+        alphabet.put("/", "-..-.");
+        alphabet.put("(", "-.--.");
+        alphabet.put(")", "-.--.-");
+        alphabet.put("&", ".-...");
+        alphabet.put(":", "---...");
+        alphabet.put(";", "-.-.-.");
+        alphabet.put("=", "-...-");
+        alphabet.put("+", ".-.-.");
+        alphabet.put("-", "-....-");
+        alphabet.put("_", "..--.-");
+        alphabet.put("$", "...-..-");
+        alphabet.put("@", ".--.-.");
+
     }
 
 
@@ -121,6 +176,8 @@ public class MainActivity extends AppCompatActivity {
                 != PackageManager.PERMISSION_GRANTED) {
             getPermissionToSendSMS();
         } else {
+            // convert the message into morse code before sending
+            message = convertToMorse(message);
             Snackbar.make(view, "onsendclick!", Snackbar.LENGTH_LONG)
                     .setAction("Action", null).show();
             smsManager.sendTextMessage(phone_number, null, message, null, null);
@@ -216,6 +273,39 @@ public class MainActivity extends AppCompatActivity {
             super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         }
     }
+
+
+    public String cleanse(String input){
+
+        String cleansedInput = input.replaceAll("[^A-Za-z0-9.,?!/()&:;=+_$@'$ ]", "");
+        return cleansedInput;
+    }
+
+    public String convertToMorse(String cleansedString){
+
+        String morseString = "";
+
+        for(int i = 0; i < cleansedString.length(); i++){
+
+            String temp = cleansedString.substring(i, i+1);
+
+            if(temp.compareTo(" ") == 0){
+
+                morseString = morseString + " / ";
+            } else {
+
+                String replace = alphabet.get(temp.toUpperCase());
+
+                morseString = morseString + replace + " ";
+            }
+
+        }
+        return morseString;
+
+
+    }
+
+
 
 
 

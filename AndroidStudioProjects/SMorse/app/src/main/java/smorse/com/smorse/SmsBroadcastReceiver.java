@@ -5,12 +5,17 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.telephony.SmsMessage;
+import android.util.Log;
+import android.widget.Button;
 
 public class SmsBroadcastReceiver extends BroadcastReceiver {
 
     public static final String SMS_BUNDLE = "pdus";
 
+    @Override
     public void onReceive(Context context, Intent intent) {
+        Log.e("received","received");
+
         Bundle intentExtras = intent.getExtras();
 
         if (intentExtras != null) {
