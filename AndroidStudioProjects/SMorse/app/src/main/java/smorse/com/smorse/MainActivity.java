@@ -2,12 +2,14 @@ package smorse.com.smorse;
 
 import android.Manifest;
 import android.content.ContentResolver;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
+import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -75,6 +77,36 @@ public class MainActivity extends AppCompatActivity {
             refreshSmsInbox();
         }
 
+        Button contactButton = findViewById(R.id.contact);
+        contactButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
+                startActivityForResult(intent, 1);
+            }
+
+
+            protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+                if (requestCode == 1 && resultCode == RESULT_OK) {
+                    // Get the URI and query the content provider for the phone number
+                    Uri contactUri = data.getData();
+                    String[] projection = new String[]{ContactsContract.CommonDataKinds.Phone.NUMBER};
+                    Cursor cursor = getApplicationContext().getContentResolver().query(contactUri, projection,
+                            null, null, null);
+
+                    // If the cursor returned is valid, get the phone number
+                    if (cursor != null && cursor.moveToFirst()) {
+                        int numberIndex = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER);
+                        String number = cursor.getString(numberIndex);
+                        // Do something with the phone number
+                        ((EditText) findViewById(R.id.phone_number)).setText(number);
+                    }
+
+                    cursor.close();
+                }
+            }
+        });
+
         // make the phone vibrate
         Button vibrationButton = findViewById(R.id.short_button);
         final Vibrator vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
@@ -100,25 +132,15 @@ public class MainActivity extends AppCompatActivity {
         final EditText phoneNumber = findViewById(R.id.phone_number);
         final EditText message = findViewById(R.id.text);
 
-        Button send_button = (Button)findViewById(R.id.send_message);
-
-        send_button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "sending message...", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-                onSendClick(view, phoneNumber.getText().toString(), message.getText().toString());
-            }
-        });
-
 
         // floating action button
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                Snackbar.make(view, "sending message...", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
+                onSendClick(view, phoneNumber.getText().toString(), message.getText().toString());
             }
         });
 
@@ -186,7 +208,7 @@ public class MainActivity extends AppCompatActivity {
         } else {
             // convert the message into morse code before sending
             message = convertToMorse(message);
-            Snackbar.make(view, "onsendclick!", Snackbar.LENGTH_LONG)
+            Snackbar.make(view, "Message sent!", Snackbar.LENGTH_LONG)
                     .setAction("Action", null).show();
             smsManager.sendTextMessage(phone_number, null, message, null, null);
             Toast.makeText(this, "Message sent!", Toast.LENGTH_SHORT).show();
@@ -204,7 +226,7 @@ public class MainActivity extends AppCompatActivity {
         if (indexBody < 0 || !smsInboxCursor.moveToFirst()) return;
         arrayAdapter.clear();
         do {
-            String str = "SMS From: " + smsInboxCursor.getString(indexAddress) +
+            String str = smsInboxCursor.getString(indexAddress) +
                     "\n" + smsInboxCursor.getString(indexBody) + "\n";
             arrayAdapter.add(str);
         } while (smsInboxCursor.moveToNext());
