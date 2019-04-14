@@ -39,12 +39,85 @@
 
     </LinearLayout>
 
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:text="Short duration:"
+        app:layout_constraintBottom_toBottomOf="@+id/short_length"
+        app:layout_constraintEnd_toStartOf="@+id/short_length"
+        app:layout_constraintHorizontal_bias="0.25"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/short_length"
+        app:layout_constraintVertical_bias="0.111" />
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:text="Long duration:"
+        app:layout_constraintBottom_toBottomOf="@+id/long_length"
+        app:layout_constraintEnd_toStartOf="@+id/long_length"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/long_length" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:text="Pause duration:"
+        app:layout_constraintBottom_toBottomOf="@+id/pause_length"
+        app:layout_constraintEnd_toStartOf="@+id/pause_length"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/pause_length" />
+
+    <SeekBar
+        android:id="@+id/short_length"
+        android:layout_width="240dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:layout_marginEnd="8dp"
+        android:max="254"
+        android:progress="20"
+        app:layout_constraintBottom_toTopOf="@id/long_length"
+        app:layout_constraintEnd_toStartOf="@+id/short_value" />
+
+    <SeekBar
+        android:id="@+id/long_length"
+        android:layout_width="240dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:layout_marginEnd="8dp"
+        android:max="254"
+        android:progress="100"
+        app:layout_constraintBottom_toTopOf="@id/pause_length"
+        app:layout_constraintEnd_toStartOf="@+id/long_value" />
+
+    <SeekBar
+        android:id="@+id/pause_length"
+        android:layout_width="240dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:layout_marginEnd="8dp"
+        android:max="1000"
+        android:progress="500"
+        app:layout_constraintBottom_toTopOf="@id/phone_number"
+        app:layout_constraintEnd_toStartOf="@+id/pause_value" />
+
     <ListView
         android:id="@+id/messages"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginTop="50dp"
         app:layout_constraintBottom_toTopOf="@id/contact"
+        android:visibility="gone"
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
@@ -104,5 +177,37 @@
         android:inputType="textMultiLine"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/short_value"
+        android:layout_width="50dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:text="20"
+        app:layout_constraintBottom_toTopOf="@+id/long_length"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/short_length" />
+
+    <TextView
+        android:id="@+id/long_value"
+        android:layout_width="50dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:text="TextView"
+        app:layout_constraintBottom_toBottomOf="@+id/long_length"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/long_length"
+        tools:text="100" />
+
+    <TextView
+        android:id="@+id/pause_value"
+        android:layout_width="50dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:text="500"
+        app:layout_constraintBottom_toBottomOf="@+id/pause_length"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/pause_length" />
 
 </android.support.constraint.ConstraintLayout>
