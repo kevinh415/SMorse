@@ -24,10 +24,6 @@ public class SmsBroadcastReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         Log.e("jkkkkkkkkk","jkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk");
 
-        MainActivity mainActivity = new MainActivity();  // BIG NO TO THIS.
-        mainActivity.refreshSmsInbox();
-
-        /*
         Bundle intentExtras = intent.getExtras();
 
         if (intentExtras != null) {
@@ -45,9 +41,9 @@ public class SmsBroadcastReceiver extends BroadcastReceiver {
             }
 
             MainActivity inst = MainActivity.instance();
-          //  inst.updateInbox(smsMessageStr);
+            inst.refreshSmsInbox();
+            //inst.updateInbox(smsMessageStr);
         }
-        */
     }
 
 }
