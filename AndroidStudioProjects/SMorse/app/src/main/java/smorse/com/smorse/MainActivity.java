@@ -81,30 +81,10 @@ public class MainActivity extends AppCompatActivity {
         contactButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
-                startActivityForResult(intent, 1);
+                Intent contactPickerIntent = new Intent(Intent.ACTION_PICK, ContactsContract.CommonDataKinds.Phone.CONTENT_URI);
+                startActivityForResult(contactPickerIntent, 1);
             }
 
-
-            protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-                if (requestCode == 1 && resultCode == RESULT_OK) {
-                    // Get the URI and query the content provider for the phone number
-                    Uri contactUri = data.getData();
-                    String[] projection = new String[]{ContactsContract.CommonDataKinds.Phone.NUMBER};
-                    Cursor cursor = getApplicationContext().getContentResolver().query(contactUri, projection,
-                            null, null, null);
-
-                    // If the cursor returned is valid, get the phone number
-                    if (cursor != null && cursor.moveToFirst()) {
-                        int numberIndex = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER);
-                        String number = cursor.getString(numberIndex);
-                        // Do something with the phone number
-                        ((EditText) findViewById(R.id.phone_number)).setText(number);
-                    }
-
-                    cursor.close();
-                }
-            }
         });
 
         // make the phone vibrate
@@ -198,6 +178,26 @@ public class MainActivity extends AppCompatActivity {
         alphabet.put("$", "...-..-");
         alphabet.put("@", ".--.-.");
 
+    }
+
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == 1 && resultCode == RESULT_OK) {
+            // Get the URI and query the content provider for the phone number
+            Uri contactUri = data.getData();
+            String[] projection = new String[]{ContactsContract.CommonDataKinds.Phone.NUMBER};
+            Cursor cursor = getApplicationContext().getContentResolver().query(contactUri, projection,
+                    null, null, null);
+
+            // If the cursor returned is valid, get the phone number
+            if (cursor != null && cursor.moveToFirst()) {
+                int numberIndex = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER);
+                String number = cursor.getString(numberIndex);
+                // Do something with the phone number
+                ((EditText) findViewById(R.id.phone_number)).setText(number);
+            }
+
+            cursor.close();
+        }
     }
 
 
