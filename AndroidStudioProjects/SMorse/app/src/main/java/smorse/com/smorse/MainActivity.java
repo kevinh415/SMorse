@@ -28,6 +28,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import java.util.HashMap;
@@ -143,6 +144,25 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+
+
+        SeekBar short_bar = findViewById(R.id.short_length);
+        SeekBar long_bar = findViewById(R.id.long_length);
+        SeekBar pause_bar = findViewById(R.id.pause_length);
+
+        TextView short_value = findViewById(R.id.short_value);
+        TextView long_value = findViewById(R.id.long_value);
+        TextView pause_value = findViewById(R.id.pause_value);
+
+        shortVibrationSpeed = short_bar.getProgress() + 1; // get progress value from the Seek bar
+        short_value.setText(shortVibrationSpeed + "");
+        longVibrationSpeed = long_bar.getProgress() + 1;
+        long_value.setText(longVibrationSpeed + "");
+        waitVibrationSpeed = pause_bar.getProgress() + 1;
+        pause_value.setText(waitVibrationSpeed + "");
+
+
+
 
         alphabet.put("A", ".-");
         alphabet.put("B", "-...");
