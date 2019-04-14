@@ -24,6 +24,10 @@ public class SmsBroadcastReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         Log.e("jkkkkkkkkk","jkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk");
 
+        MainActivity mainActivity = new MainActivity();  // BIG NO TO THIS.
+        mainActivity.refreshSmsInbox();
+
+        /*
         Bundle intentExtras = intent.getExtras();
 
         if (intentExtras != null) {
@@ -43,20 +47,7 @@ public class SmsBroadcastReceiver extends BroadcastReceiver {
             MainActivity inst = MainActivity.instance();
           //  inst.updateInbox(smsMessageStr);
         }
-    }
-
-    public void refreshSmsInbox() {
-        ContentResolver contentResolver = getContentResolver();
-        Cursor smsInboxCursor = contentResolver.query(Uri.parse("content://sms/inbox"), null, null, null, null);
-        int indexBody = smsInboxCursor.getColumnIndex("body");
-        int indexAddress = smsInboxCursor.getColumnIndex("address");
-        if (indexBody < 0 || !smsInboxCursor.moveToFirst()) return;
-        arrayAdapter.clear();
-        do {
-            String str = "SMS From: " + smsInboxCursor.getString(indexAddress) +
-                    "\n" + smsInboxCursor.getString(indexBody) + "\n";
-            arrayAdapter.add(str);
-        } while (smsInboxCursor.moveToNext());
+        */
     }
 
 
