@@ -194,58 +194,33 @@ public class MainActivity extends AppCompatActivity {
         alphabet.put("$", "...-..-");
         alphabet.put("@", ".--.-.");
 
-        alphabet.put("A", ".-");
-        alphabet.put("B", "-...");
-        alphabet.put("C", "-.-.");
-        alphabet.put("D", "-..");
-        alphabet.put("E", ".");
-        alphabet.put("F", "..-.");
-        alphabet.put("G", "--.");
-        alphabet.put("H", "....");
-        alphabet.put("I", "..");
-        alphabet.put("J", ".---");
-        alphabet.put("K", "-.-");
-        alphabet.put("L", ".-..");
-        alphabet.put("M", "--");
-        alphabet.put("N", "-.");
-        alphabet.put("O", "---");
-        alphabet.put("P", ".---.");
-        alphabet.put("Q", "--.-");
-        alphabet.put("R", ".-.");
-        alphabet.put("S", "...");
-        alphabet.put("T", "-");
-        alphabet.put("U", "..-");
-        alphabet.put("V", "...-");
-        alphabet.put("W", ".--");
-        alphabet.put("X", "-..-");
-        alphabet.put("Y", "-.--");
-        alphabet.put("Z", "--..");
-        alphabet.put("1", ".----");
-        alphabet.put("2", "..---");
-        alphabet.put("3", "...--");
-        alphabet.put("4", "....-");
-        alphabet.put("5", ".....");
-        alphabet.put("6", "-....");
-        alphabet.put("7", "--...");
-        alphabet.put("8", "---..");
-        alphabet.put("9", "----.");
-        alphabet.put(".", ".-.-.-");
-        alphabet.put(",", "--..--");
-        alphabet.put("?", "..--..");
-        alphabet.put("'", "-----");
-        alphabet.put("!", "-.-.--");
-        alphabet.put("/", "-..-.");
-        alphabet.put("(", "-.--.");
-        alphabet.put(")", "-.--.-");
-        alphabet.put("&", ".-...");
-        alphabet.put(":", "---...");
-        alphabet.put(";", "-.-.-.");
-        alphabet.put("=", "-...-");
-        alphabet.put("+", ".-.-.");
-        alphabet.put("-", "-....-");
-        alphabet.put("_", "..--.-");
-        alphabet.put("$", "...-..-");
-        alphabet.put("@", ".--.-.");
+
+        alphabet.put(".----","1");
+        alphabet.put("..---","2");
+        alphabet.put("...--","3");
+        alphabet.put("....-","4");
+        alphabet.put(".....","5");
+        alphabet.put("-....","6");
+        alphabet.put("--...","7");
+        alphabet.put("---..","8");
+        alphabet.put("----.","9");
+        alphabet.put(".-.-.-",".");
+        alphabet.put("--..--",",");
+        alphabet.put("..--..","?");
+        alphabet.put("-----","'");
+        alphabet.put("-.-.--","!");
+        alphabet.put("-..-.","/");
+        alphabet.put("-.--.","(");
+        alphabet.put("-.--.-",")");
+        alphabet.put(".-...","&");
+        alphabet.put("---...",":");
+        alphabet.put("-.-.-.", ";");
+        alphabet.put("-...-","=");
+        alphabet.put(".-.-.","+");
+        alphabet.put("-....-", "-");
+        alphabet.put("..--.-","_");
+        alphabet.put("...-..-", "$");
+        alphabet.put(".--.-.", "@");
 
     }
 
@@ -513,10 +488,13 @@ public class MainActivity extends AppCompatActivity {
         }
 
         public void morseVibrate(String message) {
-
             // make the phone vibrate
             final Vibrator vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
 
+            if (message.matches(".*[a-zA-Z]+.*")){
+                Log.e("A","jkkkkkkkkkkk");
+                message = convertToMorse(message);
+            }
             // iterate through each character in the message
             for (char c : message.toCharArray()) {
                 // short vibration if the character is a '.'
