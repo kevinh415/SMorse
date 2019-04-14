@@ -134,18 +134,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        // floating action button
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "sending message...", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-                onSendClick(view, phoneNumber.getText().toString(), message.getText().toString());
-            }
-        });
-
-
         alphabet.put("A", ".-");
         alphabet.put("B", "-...");
         alphabet.put("C", "-.-.");
@@ -221,7 +209,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-
     public void onSendClick(View view,String phone_number, String message) {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.SEND_SMS)
                 != PackageManager.PERMISSION_GRANTED) {
@@ -232,7 +219,6 @@ public class MainActivity extends AppCompatActivity {
             Snackbar.make(view, "Message sent!", Snackbar.LENGTH_LONG)
                     .setAction("Action", null).show();
             smsManager.sendTextMessage(phone_number, null, message, null, null);
-            Toast.makeText(this, "Message sent!", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -290,6 +276,7 @@ public class MainActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            setContentView(R.layout.settings);
             return true;
         }
 

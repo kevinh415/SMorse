@@ -18,7 +18,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
-        android:text="Developed by: Kevin Hong, Satya Gandham, and Akshay Anil" />
+        android:text="Developed by: Kevin Hong, Satya Gandham, and Akshay Anil for Bitcamp 2019." />
 
     <TextView
         android:layout_width="wrap_content"
