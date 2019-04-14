@@ -2,6 +2,7 @@ package smorse.com.smorse;
 
 import android.Manifest;
 import android.content.ContentResolver;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -13,6 +14,7 @@ import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -64,10 +66,18 @@ public class MainActivity extends AppCompatActivity {
         ListView messages = (ListView) findViewById(R.id.messages);
         arrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, smsMessagesList);
         messages.setAdapter(arrayAdapter);
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS)
+                != PackageManager.PERMISSION_GRANTED) {
+            getPermissionToReadContacts();
+        } else {
+            refreshSmsInbox();
+        }
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECEIVE_SMS)
                 != PackageManager.PERMISSION_GRANTED) {
             getPermissionToReceiveSMS();
+        } else {
+            refreshSmsInbox();
         }
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_SMS)
@@ -112,6 +122,17 @@ public class MainActivity extends AppCompatActivity {
         final EditText phoneNumber = findViewById(R.id.phone_number);
         final EditText message = findViewById(R.id.text);
 
+        Button send = (Button) findViewById(R.id.send);
+        send.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(!phoneNumber.getText().toString().equals("") && !message.getText().toString().equals("")) {
+                    Snackbar.make(view, "sending message...", Snackbar.LENGTH_LONG)
+                            .setAction("Action", null).show();
+                    onSendClick(view, phoneNumber.getText().toString(), message.getText().toString());
+                }
+            }
+        });
 
         // floating action button
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -215,8 +236,24 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public String getContactName(final String phoneNumber, Context context)
+    {
+        Uri uri=Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI,Uri.encode(phoneNumber));
 
+        String[] projection = new String[]{ContactsContract.PhoneLookup.DISPLAY_NAME};
 
+        String contactName="";
+        Cursor cursor=context.getContentResolver().query(uri,projection,null,null,null);
+
+        if (cursor != null) {
+            if(cursor.moveToFirst()) {
+                contactName=cursor.getString(0);
+            }
+            cursor.close();
+        }
+
+        return contactName;
+    }
 
     public void refreshSmsInbox() {
         ContentResolver contentResolver = getContentResolver();
@@ -226,7 +263,10 @@ public class MainActivity extends AppCompatActivity {
         if (indexBody < 0 || !smsInboxCursor.moveToFirst()) return;
         arrayAdapter.clear();
         do {
-            String str = smsInboxCursor.getString(indexAddress) +
+            String contactName = getContactName(smsInboxCursor.getString(indexAddress).substring(2), this);
+            if (contactName.equals(""))
+                    contactName = "Unknown";
+            String str =  contactName +
                     "\n" + smsInboxCursor.getString(indexBody) + "\n";
             arrayAdapter.add(str);
         } while (smsInboxCursor.moveToNext());
@@ -298,6 +338,35 @@ public class MainActivity extends AppCompatActivity {
                     RECEIVE_SMS_PERMISSIONS_REQUEST);
         }
     }
+
+    public void getPermissionToReadContacts() {
+        // Here, thisActivity is the current activity
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.READ_CONTACTS)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            // Permission is not granted
+            // Should we show an explanation?
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                    Manifest.permission.READ_CONTACTS)) {
+                // Show an explanation to the user *asynchronously* -- don't block
+                // this thread waiting for the user's response! After the user
+                // sees the explanation, try again to request the permission.
+            } else {
+                // No explanation needed; request the permission
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.READ_CONTACTS},
+                        1);
+
+                // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
+                // app-defined int constant. The callback method gets the
+                // result of the request.
+            }
+        } else {
+            // Permission has already been granted
+        }
+    }
+
 
     @Override
     public void onRequestPermissionsResult(int requestCode,
