@@ -46,6 +46,13 @@ public class MainActivity extends AppCompatActivity {
     SmsManager smsManager = SmsManager.getDefault();
     HashMap<String, String> alphabet = new HashMap<>();
 
+
+    // interval of the vibrations
+    int shortVibrationSpeed = 20;
+    int longVibrationSpeed = 100;
+    int waitVibrationSpeed = 500;
+
+
     public static MainActivity instance() {
         return inst;
     }
