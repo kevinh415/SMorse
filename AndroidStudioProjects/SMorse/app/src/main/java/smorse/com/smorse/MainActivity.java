@@ -74,6 +74,15 @@ public class MainActivity extends AppCompatActivity {
         ListView messages = (ListView) findViewById(R.id.messages);
         arrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, smsMessagesList);
         messages.setAdapter(arrayAdapter);
+
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_SMS)
+                != PackageManager.PERMISSION_GRANTED) {
+            getPermissionToReadSMS();
+        } else {
+            refreshSmsInbox();
+        }
+
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS)
                 != PackageManager.PERMISSION_GRANTED) {
             getPermissionToReadContacts();
@@ -88,12 +97,6 @@ public class MainActivity extends AppCompatActivity {
             refreshSmsInbox();
         }
 
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_SMS)
-                != PackageManager.PERMISSION_GRANTED) {
-            getPermissionToReadSMS();
-        } else {
-            refreshSmsInbox();
-        }
 
         Button contactButton = findViewById(R.id.contact);
         contactButton.setOnClickListener(new View.OnClickListener() {
@@ -303,6 +306,8 @@ public class MainActivity extends AppCompatActivity {
 
     public void refreshSmsInbox() {
         ContentResolver contentResolver = getContentResolver();
+        //getting permission
+        // getPermissionToReadSMS();
         Cursor smsInboxCursor = contentResolver.query(Uri.parse("content://sms/inbox"), null, null, null, null);
         int indexBody = smsInboxCursor.getColumnIndex("body");
         int indexAddress = smsInboxCursor.getColumnIndex("address");
@@ -474,15 +479,21 @@ public class MainActivity extends AppCompatActivity {
         int indexBody = smsInboxCursor.getColumnIndex("body");
         int indexAddress = smsInboxCursor.getColumnIndex("address");
         if (indexBody < 0 || !smsInboxCursor.moveToFirst()) return;
+        int count = 0;
+
         arrayAdapter.clear();
         // vibrate to the first string
         new Vibrations().execute(smsInboxCursor.getString(indexBody));
 
         do {
-            String str = smsInboxCursor.getString(indexAddress) +
+            String contactName = getContactName(smsInboxCursor.getString(indexAddress).substring(2), this);
+            if (contactName.equals(""))
+                contactName = "Unknown";
+            String str = contactName +
                     "\n" + smsInboxCursor.getString(indexBody) + "\n";
             arrayAdapter.add(str);
-        } while (smsInboxCursor.moveToNext());
+            count++;
+        } while (smsInboxCursor.moveToNext() && count < 20 );
     }
 
 
