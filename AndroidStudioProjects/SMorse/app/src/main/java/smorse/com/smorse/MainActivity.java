@@ -145,7 +145,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
+/*
         SeekBar short_bar = findViewById(R.id.short_length);
         SeekBar long_bar = findViewById(R.id.long_length);
         SeekBar pause_bar = findViewById(R.id.pause_length);
@@ -160,7 +160,7 @@ public class MainActivity extends AppCompatActivity {
         long_value.setText(longVibrationSpeed + "");
         waitVibrationSpeed = pause_bar.getProgress() + 1;
         pause_value.setText(waitVibrationSpeed + "");
-
+*/
 
 
 
