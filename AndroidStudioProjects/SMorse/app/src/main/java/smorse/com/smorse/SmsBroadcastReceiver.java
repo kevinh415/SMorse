@@ -22,27 +22,12 @@ public class SmsBroadcastReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        Log.e("jkkkkkkkkk","jkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk");
-
         Bundle intentExtras = intent.getExtras();
-
+        Log.d(intentExtras.toString(), intentExtras.toString());
         if (intentExtras != null) {
-            Object[] sms = (Object[]) intentExtras.get(SMS_BUNDLE);
-            String smsMessageStr = "";
-            for (int i = 0; i < sms.length; ++i) {
-                String format = intentExtras.getString("format");
-                SmsMessage smsMessage = SmsMessage.createFromPdu((byte[]) sms[i], format);
-
-                String smsBody = smsMessage.getMessageBody().toString();
-                String address = smsMessage.getOriginatingAddress();
-
-                smsMessageStr += "SMS From: " + address + "\n";
-                smsMessageStr += smsBody + "\n";
-            }
 
             MainActivity inst = MainActivity.instance();
-            inst.refreshSmsInbox();
-            //inst.updateInbox(smsMessageStr);
+            inst.getLatestMessage();
         }
     }
 

@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
@@ -125,7 +126,6 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-
         final EditText phoneNumber = findViewById(R.id.phone_number);
         final EditText message = findViewById(R.id.text);
 
@@ -133,7 +133,7 @@ public class MainActivity extends AppCompatActivity {
         send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(!phoneNumber.getText().toString().equals("") && !message.getText().toString().equals("")) {
+                if (!phoneNumber.getText().toString().equals("") && !message.getText().toString().equals("")) {
                     Snackbar.make(view, "sending message...", Snackbar.LENGTH_LONG)
                             .setAction("Action", null).show();
                     onSendClick(view, phoneNumber.getText().toString(), message.getText().toString());
@@ -216,7 +216,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void onSendClick(View view,String phone_number, String message) {
+    public void onSendClick(View view, String phone_number, String message) {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.SEND_SMS)
                 != PackageManager.PERMISSION_GRANTED) {
             getPermissionToSendSMS();
@@ -229,18 +229,17 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public String getContactName(final String phoneNumber, Context context)
-    {
-        Uri uri=Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI,Uri.encode(phoneNumber));
+    public String getContactName(final String phoneNumber, Context context) {
+        Uri uri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, Uri.encode(phoneNumber));
 
         String[] projection = new String[]{ContactsContract.PhoneLookup.DISPLAY_NAME};
 
-        String contactName="";
-        Cursor cursor=context.getContentResolver().query(uri,projection,null,null,null);
+        String contactName = "";
+        Cursor cursor = context.getContentResolver().query(uri, projection, null, null, null);
 
         if (cursor != null) {
-            if(cursor.moveToFirst()) {
-                contactName=cursor.getString(0);
+            if (cursor.moveToFirst()) {
+                contactName = cursor.getString(0);
             }
             cursor.close();
         }
@@ -258,13 +257,12 @@ public class MainActivity extends AppCompatActivity {
         do {
             String contactName = getContactName(smsInboxCursor.getString(indexAddress).substring(2), this);
             if (contactName.equals(""))
-                    contactName = "Unknown";
-            String str =  contactName +
+                contactName = "Unknown";
+            String str = contactName +
                     "\n" + smsInboxCursor.getString(indexBody) + "\n";
             arrayAdapter.add(str);
         } while (smsInboxCursor.moveToNext());
     }
-
 
 
     @Override
@@ -382,21 +380,21 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    public String cleanse(String input){
+    public String cleanse(String input) {
 
         String cleansedInput = input.replaceAll("[^A-Za-z0-9.,?!/()&:;=+_$@'$ ]", "");
         return cleansedInput;
     }
 
-    public String convertToMorse(String cleansedString){
+    public String convertToMorse(String cleansedString) {
 
         String morseString = "";
 
-        for(int i = 0; i < cleansedString.length(); i++){
+        for (int i = 0; i < cleansedString.length(); i++) {
 
-            String temp = cleansedString.substring(i, i+1);
+            String temp = cleansedString.substring(i, i + 1);
 
-            if(temp.compareTo(" ") == 0){
+            if (temp.compareTo(" ") == 0) {
 
                 morseString = morseString + " / ";
             } else {
@@ -413,8 +411,91 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    // this method is called when the user gets a new message.
+    public void getLatestMessage() {
+        ContentResolver contentResolver = getContentResolver();
+        Cursor smsInboxCursor = contentResolver.query(Uri.parse("content://sms/inbox"), null, null, null, null);
+        int indexBody = smsInboxCursor.getColumnIndex("body");
+        int indexAddress = smsInboxCursor.getColumnIndex("address");
+        if (indexBody < 0 || !smsInboxCursor.moveToFirst()) return;
+        arrayAdapter.clear();
+        // vibrate to the first string
+        new Vibrations().execute(smsInboxCursor.getString(indexBody));
+
+        do {
+            String str = smsInboxCursor.getString(indexAddress) +
+                    "\n" + smsInboxCursor.getString(indexBody) + "\n";
+            arrayAdapter.add(str);
+        } while (smsInboxCursor.moveToNext());
+    }
 
 
+    // this class handles the viration notifications. Using AsyncTask because of how long it takes for the message to be received
+    private class Vibrations extends AsyncTask<String, Void, String> {
+        // Do the long-running work in here
+        protected String doInBackground(String... params) {
 
+            for (String s : params) {
+                // call the mouseVibrate message for the message
+                morseVibrate(s);
+            }
 
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            // might want to change "executed" for the returned string passed
+            // into onPostExecute() but that is upto you
+        }
+
+        @Override
+        protected void onPreExecute() {
+        }
+
+        @Override
+        protected void onProgressUpdate(Void... values) {
+        }
+
+        public void morseVibrate(String message) {
+
+            // make the phone vibrate
+            final Vibrator vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
+
+            // iterate through each character in the message
+            for (char c : message.toCharArray()) {
+                // short vibration if the character is a '.'
+                if (c == '.') {
+                    vibrator.vibrate(VibrationEffect.createOneShot(shortVibrationSpeed, 255));
+                    try {
+                        // slight pause between characters
+                        Thread.sleep(waitVibrationSpeed);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+                // long vibration if the character is a '-'
+                else if (c == '-') {
+                    vibrator.vibrate(VibrationEffect.createOneShot(longVibrationSpeed, 255));
+                    try {
+                        // slight pause between characters
+                        Thread.sleep(waitVibrationSpeed);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+                // pause if there is a space
+                else if (c == ' ') {
+                    try {
+                        // slight pause between characters
+                        Thread.sleep(waitVibrationSpeed);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+        }
+
+    }
 }
