@@ -1,4 +1,4 @@
-#SMorse
+# SMorse
 
 ![SMorse Logo](https://i.imgur.com/UcQ9efd.png)
 
