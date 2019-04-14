@@ -47,7 +47,10 @@ public class SmsBroadcastReceiver extends BroadcastReceiver {
             MainActivity inst = MainActivity.instance();
           //  inst.updateInbox(smsMessageStr);
         }
+<<<<<<< HEAD
         */
+=======
+>>>>>>> 89c41d82229f8d0fc1d289e60ca60d3973308957
     }
 
 
