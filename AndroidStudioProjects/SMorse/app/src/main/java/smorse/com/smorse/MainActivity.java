@@ -72,98 +72,6 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        ListView messages = (ListView) findViewById(R.id.messages);
-        arrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, smsMessagesList);
-        messages.setAdapter(arrayAdapter);
-
-
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_SMS)
-                != PackageManager.PERMISSION_GRANTED) {
-            getPermissionToReadSMS();
-        } else {
-            refreshSmsInbox();
-        }
-
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS)
-                != PackageManager.PERMISSION_GRANTED) {
-            getPermissionToReadContacts();
-        } else {
-            refreshSmsInbox();
-        }
-
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECEIVE_SMS)
-                != PackageManager.PERMISSION_GRANTED) {
-            getPermissionToReceiveSMS();
-        } else {
-            refreshSmsInbox();
-        }
-
-
-        Button contactButton = findViewById(R.id.contact);
-        contactButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent contactPickerIntent = new Intent(Intent.ACTION_PICK, ContactsContract.CommonDataKinds.Phone.CONTENT_URI);
-                startActivityForResult(contactPickerIntent, 1);
-            }
-
-        });
-
-        // make the phone vibrate
-        Button vibrationButton = findViewById(R.id.short_button);
-        final Vibrator vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
-
-        vibrationButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                vibrator.vibrate(VibrationEffect.createOneShot(20, VibrationEffect.DEFAULT_AMPLITUDE));
-            }
-        });
-
-        // make the phone vibrate
-        Button longVibrationButton = findViewById(R.id.long_button);
-        longVibrationButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                vibrator.vibrate(VibrationEffect.createOneShot(100, VibrationEffect.DEFAULT_AMPLITUDE));
-            }
-        });
-
-
-        final EditText phoneNumber = findViewById(R.id.phone_number);
-        final EditText message = findViewById(R.id.text);
-
-        Button send = (Button) findViewById(R.id.send);
-        send.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (!phoneNumber.getText().toString().equals("") && !message.getText().toString().equals("")) {
-                    Snackbar.make(view, "sending message...", Snackbar.LENGTH_LONG)
-                            .setAction("Action", null).show();
-                    onSendClick(view, phoneNumber.getText().toString(), message.getText().toString());
-                }
-            }
-        });
-
-/*
-        SeekBar short_bar = findViewById(R.id.short_length);
-        SeekBar long_bar = findViewById(R.id.long_length);
-        SeekBar pause_bar = findViewById(R.id.pause_length);
-
-        TextView short_value = findViewById(R.id.short_value);
-        TextView long_value = findViewById(R.id.long_value);
-        TextView pause_value = findViewById(R.id.pause_value);
-
-        shortVibrationSpeed = short_bar.getProgress() + 1; // get progress value from the Seek bar
-        short_value.setText(shortVibrationSpeed + "");
-        longVibrationSpeed = long_bar.getProgress() + 1;
-        long_value.setText(longVibrationSpeed + "");
-        waitVibrationSpeed = pause_bar.getProgress() + 1;
-        pause_value.setText(waitVibrationSpeed + "");
-*/
-
-
-
         alphabet.put("A", ".-");
         alphabet.put("B", "-...");
         alphabet.put("C", "-.-.");
@@ -271,6 +179,102 @@ public class MainActivity extends AppCompatActivity {
         alphabet.put("..--.-","_");
         alphabet.put("...-..-", "$");
         alphabet.put(".--.-.", "@");
+        alphabet.put("/", " ");
+
+
+        ListView messages = (ListView) findViewById(R.id.messages);
+        arrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, smsMessagesList);
+        messages.setAdapter(arrayAdapter);
+
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_SMS)
+                != PackageManager.PERMISSION_GRANTED) {
+            getPermissionToReadSMS();
+        } else {
+            refreshSmsInbox();
+        }
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS)
+                != PackageManager.PERMISSION_GRANTED) {
+            getPermissionToReadContacts();
+        } else {
+            refreshSmsInbox();
+        }
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECEIVE_SMS)
+                != PackageManager.PERMISSION_GRANTED) {
+            getPermissionToReceiveSMS();
+        } else {
+            refreshSmsInbox();
+        }
+
+
+        Button contactButton = findViewById(R.id.contact);
+        contactButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent contactPickerIntent = new Intent(Intent.ACTION_PICK, ContactsContract.CommonDataKinds.Phone.CONTENT_URI);
+                startActivityForResult(contactPickerIntent, 1);
+            }
+
+        });
+
+        // make the phone vibrate
+        Button vibrationButton = findViewById(R.id.short_button);
+        final Vibrator vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
+
+        vibrationButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                vibrator.vibrate(VibrationEffect.createOneShot(20, VibrationEffect.DEFAULT_AMPLITUDE));
+            }
+        });
+
+        // make the phone vibrate
+        Button longVibrationButton = findViewById(R.id.long_button);
+        longVibrationButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                vibrator.vibrate(VibrationEffect.createOneShot(100, VibrationEffect.DEFAULT_AMPLITUDE));
+            }
+        });
+
+
+        final EditText phoneNumber = findViewById(R.id.phone_number);
+        final EditText message = findViewById(R.id.text);
+
+        Button send = (Button) findViewById(R.id.send);
+        send.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (!phoneNumber.getText().toString().equals("") && !message.getText().toString().equals("")) {
+                    Snackbar.make(view, "sending message...", Snackbar.LENGTH_LONG)
+                            .setAction("Action", null).show();
+                    onSendClick(view, phoneNumber.getText().toString(), message.getText().toString());
+                }
+            }
+        });
+
+/*
+        SeekBar short_bar = findViewById(R.id.short_length);
+        SeekBar long_bar = findViewById(R.id.long_length);
+        SeekBar pause_bar = findViewById(R.id.pause_length);
+
+        TextView short_value = findViewById(R.id.short_value);
+        TextView long_value = findViewById(R.id.long_value);
+        TextView pause_value = findViewById(R.id.pause_value);
+
+        shortVibrationSpeed = short_bar.getProgress() + 1; // get progress value from the Seek bar
+        short_value.setText(shortVibrationSpeed + "");
+        longVibrationSpeed = long_bar.getProgress() + 1;
+        long_value.setText(longVibrationSpeed + "");
+        waitVibrationSpeed = pause_bar.getProgress() + 1;
+        pause_value.setText(waitVibrationSpeed + "");
+*/
+
+
+
+
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -338,8 +342,15 @@ public class MainActivity extends AppCompatActivity {
             String contactName = getContactName(smsInboxCursor.getString(indexAddress).substring(2), this);
             if (contactName.equals(""))
                 contactName = "Unknown";
-            String str = contactName +
-                    "\n" + smsInboxCursor.getString(indexBody) + "\n";
+            String received = smsInboxCursor.getString(indexBody);
+            String str;
+            if (received.contains("-") || received.contains(".")){
+                str = contactName +
+                        "\n" + received + "\n" + "Translated: " + convertToString(received) + "\n";
+            } else {
+                str = contactName +
+                        "\n" + received + "\n";
+            }
             arrayAdapter.add(str);
             count++;
         } while (smsInboxCursor.moveToNext() && count < 20 );
@@ -476,7 +487,6 @@ public class MainActivity extends AppCompatActivity {
             String temp = cleansedString.substring(i, i + 1);
 
             if (temp.compareTo(" ") == 0) {
-
                 morseString = morseString + " / ";
             } else {
 
@@ -490,6 +500,23 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
+
+    public String convertToString(String cleansedString) {
+
+        String morseString = "";
+        String[] arr = cleansedString.split(" ");
+
+        for (int i = 0; i < arr.length; i++) {
+
+            String temp = arr[i];
+            morseString = morseString + alphabet.get(temp);
+
+
+        }
+        return morseString;
+
+    }
+
 
 
     // this method is called when the user gets a new message.
@@ -509,8 +536,15 @@ public class MainActivity extends AppCompatActivity {
             String contactName = getContactName(smsInboxCursor.getString(indexAddress).substring(2), this);
             if (contactName.equals(""))
                 contactName = "Unknown";
-            String str = contactName +
-                    "\n" + smsInboxCursor.getString(indexBody) + "\n";
+            String received = smsInboxCursor.getString(indexBody);
+            String str;
+            if (received.contains("-") || received.contains(".")){
+                str = contactName +
+                        "\n" + received + "\n" + "Translated: " + convertToString(received) + "\n";
+            } else {
+                str = contactName +
+                        "\n" + received + "\n";
+            }
             arrayAdapter.add(str);
             count++;
         } while (smsInboxCursor.moveToNext() && count < 20 );
@@ -549,7 +583,6 @@ public class MainActivity extends AppCompatActivity {
             final Vibrator vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
 
             if (message.matches(".*[a-zA-Z]+.*")){
-                Log.e("A","jkkkkkkkkkkk");
                 message = convertToMorse(message);
             }
             // iterate through each character in the message
